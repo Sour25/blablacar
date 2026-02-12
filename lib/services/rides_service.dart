@@ -3,7 +3,8 @@ import '../model/ride/locations.dart';
 import '../model/ride/ride.dart';
 
 class RidesService {
-  static List<Ride> availableRides = fakeRides; // TODO for now fake data
+  static List<Ride> availableRides = fakeRides;
+  // TODO for now fake data
 
   //
   //  filter the rides starting from given departure location
@@ -19,13 +20,23 @@ class RidesService {
     List<Ride> rides,
     int requestedSeat,
   ) {
-    return [];
+    return rides.where((ride) => ride.availableSeats >= requestedSeat).toList();
   }
 
   //
   //  filter the rides   with several optional criteria (flexible filter options)
   //
   static List<Ride> filterBy({Location? departure, int? seatRequested}) {
-    return [];
+    List<Ride> rides = availableRides;
+
+    if (departure != null) {
+      rides = _filterByDeparture(rides, departure);
+    }
+
+    if (seatRequested != null) {
+      rides = _filterBySeatRequested(rides, seatRequested);
+    }
+
+    return rides;
   }
 }
