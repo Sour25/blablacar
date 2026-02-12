@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
- 
+
 import '../../../../model/ride/locations.dart';
 import '../../../../model/ride_pref/ride_pref.dart';
- 
+
 ///
 /// A Ride Preference From is a view to select:
 ///   - A depcarture location
@@ -28,8 +28,6 @@ class _RidePrefFormState extends State<RidePrefForm> {
   Location? arrival;
   late int requestedSeats;
 
-
-
   // ----------------------------------
   // Initialize the Form attributes
   // ----------------------------------
@@ -37,18 +35,46 @@ class _RidePrefFormState extends State<RidePrefForm> {
   @override
   void initState() {
     super.initState();
-    // TODO 
+    // TODO
+    if (widget.initRidePref != null) {
+      departure = widget.initRidePref!.departure;
+      arrival = widget.initRidePref!.arrival;
+      departureDate = widget.initRidePref!.departureDate;
+      requestedSeats = widget.initRidePref!.requestedSeats;
+    } else {
+      departureDate = DateTime.now();
+      requestedSeats = 1;
+    }
   }
 
   // ----------------------------------
   // Handle events
   // ----------------------------------
- 
-
+  bool get isValid =>
+      departure != null && arrival != null && requestedSeats > 0;
   // ----------------------------------
   // Compute the widgets rendering
   // ----------------------------------
-  
+  void switchLocations() {
+    setState(() {
+      final temp = departure;
+      departure = arrival;
+      arrival = temp;
+    });
+  }
+
+  void submit() {
+    if (!isValid) return;
+
+    final ridePref = RidePref(
+      departure: departure!,
+      arrival: arrival!,
+      departureDate: departureDate,
+      requestedSeats: requestedSeats,
+    );
+
+    Navigator.pop(context, ridePref);
+  }
 
   // ----------------------------------
   // Build the widgets
@@ -56,10 +82,21 @@ class _RidePrefFormState extends State<RidePrefForm> {
   @override
   Widget build(BuildContext context) {
     return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [ 
- 
-        ]);
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ListTile(
+          title: Text(departure?.name ?? "Select departure"),
+          onTap: () {},
+        ),
+
+        ListTile(title: Text(arrival?.name ?? "Select arrival"), onTap: () {}),
+
+        IconButton(
+          icon: const Icon(Icons.swap_vert),
+          onPressed: switchLocations,
+        ),
+      ],
+    );
   }
 }
