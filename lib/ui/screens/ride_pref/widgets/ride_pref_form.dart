@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../widgets/actions/bla_button.dart';
 import '../../../widgets/display/bla_divider.dart';
-
 import '../../../../model/ride/locations.dart';
 import '../../../../model/ride_pref/ride_pref.dart';
 import '../../../../utils/animations_util.dart';
@@ -43,7 +42,6 @@ class _RidePrefFormState extends State<RidePrefForm> {
   }
 
   // ----------------------------
-  // BLA-002: Select locations
   // ----------------------------
 
   void onDeparturePressed() async {
@@ -75,7 +73,6 @@ class _RidePrefFormState extends State<RidePrefForm> {
   }
 
   // ----------------------------
-  // BLA-003: Swap locations
   // ----------------------------
 
   void onSwappingLocationPressed() {
