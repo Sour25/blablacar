@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:blablacar/services/locations_service.dart';
+import 'package:provider/provider.dart';
+import '../../../repositories/locations_repository.dart';
 import '../../../model/ride/locations.dart';
 
 class LocationPicker extends StatefulWidget {
@@ -33,20 +34,15 @@ class _LocationPickerState extends State<LocationPicker> {
     Navigator.pop(context, location);
   }
 
-  List<Location> get filteredLocations {
+List<Location> get filteredLocations {
     if (currentSearchText.length < 2) {
       return [];
     }
 
-    return LocationsService.availableLocations
-        .where(
-          (location) => location.name.toUpperCase().contains(
-            currentSearchText.toUpperCase(),
-          ),
-        )
-        .toList();
-  }
+    final repo = context.read<LocationsRepository>();
 
+    return repo.searchLocations(currentSearchText);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
