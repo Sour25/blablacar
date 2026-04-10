@@ -1,35 +1,33 @@
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'repositories/locations_repository.dart';
-import 'repositories/rides_repository.dart';
-import 'repositories/ride_preference_repository.dart';
+import 'data/repositories/artist/artist_repository.dart';
+import 'data/repositories/artist/artist_repository_firebase.dart';
+import 'data/repositories/songs/song_repository_firebase.dart';
+import 'main_common.dart';
+import 'data/repositories/settings/app_settings_repository_mock.dart';
+import 'data/repositories/songs/song_repository.dart';
+import 'ui/states/player_state.dart';
+import 'ui/states/settings_state.dart';
 
-import 'ui/screens/ride_pref/ride_pref_screen.dart';
-import 'ui/theme/theme.dart';
+/// Configure provider dependencies for dev environment
+List<InheritedProvider> get devProviders {
+  final appSettingsRepository = AppSettingsRepositoryMock();
 
-void main() {
-  runApp(const MyApp());
+  return [
+    // 1 - Inject repositories
+    Provider<SongRepository>(create: (_) => SongRepositoryFirebase()),
+    Provider<ArtistRepository>(create: (_) => ArtistRepositoryFirebase()),
+
+    // 2 - Inject the player state
+    ChangeNotifierProvider<PlayerState>(create: (_) => PlayerState()),
+
+    // 3 - Inject the  app setting state
+    ChangeNotifierProvider<AppSettingsState>(
+      create: (_) => AppSettingsState(repository: appSettingsRepository),
+    ),
+  ];
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<LocationsRepository>(create: (_) => MockLocationsRepository()),
-        Provider<RidesRepository>(create: (_) => MockRidesRepository()),
-        Provider<RidePreferenceRepository>(
-          create: (_) => MockRidePreferenceRepository(),
-        ),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: appTheme,
-        home: Scaffold(body: RidePrefScreen()),
-      ),
-    );
-  }
+void main() {
+  mainCommon(devProviders);
 }
